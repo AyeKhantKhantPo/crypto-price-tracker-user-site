@@ -1,26 +1,21 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import CurrencyPairListContainer from './components/CurrencyPairListContainer';
+import NavBar from './components/NavBar';
+import './styles/NavBar.css'; // Import the navbar CSS file
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <NavBar />
+      <div className="main-content"> {/* Add the main-content class */}
+        <Routes>
+          <Route path="/pairs" element={<CurrencyPairListContainer />} />
+          {/* Additional routes and components for currency details, user registration, etc. */}
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
