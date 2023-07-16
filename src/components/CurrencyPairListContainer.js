@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MaterialTable from 'material-table';
-import fetchCurrencyPairs from '../api/currencyPairsApi';
+import fetchCurrencyRate from '../api/currencyRateApi';
 import '../styles/CurrencyPairListContainer.css';
 
 const CurrencyPairListContainer = () => {
@@ -10,8 +10,9 @@ const CurrencyPairListContainer = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchCurrencyPairs();
+        const data = await fetchCurrencyRate();
         const pairs = [];
+        let count = 1
         data.forEach((item, index) => {
           for (let i = index + 1; i < data.length; i++) {
             const base = item.symbol;
@@ -21,6 +22,7 @@ const CurrencyPairListContainer = () => {
             const price = baseRate / quoteRate;
 
             const pair = {
+              number: count++,
               pair: `${base}/${quote}`,
               price: `$${price.toFixed(5)}`
             };
@@ -40,8 +42,31 @@ const CurrencyPairListContainer = () => {
   }, []);
 
   const columns = [
-    { title: 'Currency Pair', field: 'pair' },
-    { title: 'Price', field: 'price' },
+    {
+      title: 'No.',
+      field: 'number',
+      type: 'numeric',
+      align: 'left',
+      cellStyle: {
+        textAlign: 'left'
+      }
+    },
+    {
+      title: 'Currency Pair',
+      field: 'pair',
+      align: 'left',
+      cellStyle: {
+        textAlign: 'left'
+      }
+    },
+    {
+      title: 'Price',
+      field: 'price',
+      align: 'left',
+      cellStyle: {
+        textAlign: 'left'
+      }
+    },
   ];
 
   return (

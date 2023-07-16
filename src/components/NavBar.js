@@ -57,11 +57,11 @@ const NavBar = () => {
           </Button>
           <Button
             component={RouterLink}
-            to="/pricing"
+            to="/details"
             color="inherit"
-            className={location.pathname === '/pricing' ? 'active' : ''}
+            className={location.pathname === '/details' ? 'active' : ''}
           >
-            Pricing
+            Currency Details
           </Button>
         </div>
         <div className="account-icon">
