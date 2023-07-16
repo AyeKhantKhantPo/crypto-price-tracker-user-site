@@ -2,19 +2,24 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import CurrencyPairListContainer from './components/CurrencyPairListContainer';
 import CurrencyDetailsListContainer from './components/CurrencyDetailsListContainer';
+import CurrencyHistoricalData from './components/CurrencyHistorical';
+import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
 
 import NavBar from './components/NavBar';
-import './styles/NavBar.css'; // Import the navbar CSS file
+import './styles/NavBar.css';
 
 const App = () => {
   return (
     <Router>
-      <NavBar />
-      <div className="main-content"> {/* Add the main-content class */}
+      <div className="main-content">
+        <NavBar />
         <Routes>
           <Route path="/pairs" element={<CurrencyPairListContainer />} />
           <Route path="/details" element={<CurrencyDetailsListContainer />} />
-          {/* Additional routes and components for currency details, user registration, etc. */}
+          <Route path="/historical-data/:id" element={<CurrencyHistoricalData />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
         </Routes>
       </div>
     </Router>

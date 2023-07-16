@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MaterialTable from 'material-table';
 import fetchCurrencyRate from '../api/currencyRateApi';
-import fetchCurrencyAssetHistoricalData from '../api/currencyAssetApi';
-import { Button } from '@material-ui/core';
+import Button from '@mui/material/Button';
 import TimelineIcon from '@mui/icons-material/Timeline';
-
 import '../styles/CurrencyDetailsListContainer.css';
 
 const CurrencyDetailsListContainer = () => {
   const [currencyDetails, setCurrencyDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,7 +105,8 @@ const CurrencyDetailsListContainer = () => {
 
   const handleOpenHistoricalData = async (id) => {
     // Handle opening the historical data for the selected cryptocurrency
-    const historicalData = await fetchCurrencyAssetHistoricalData(id, 'd1');
+    navigate(`/historical-data/${id}`);
+
 
   };
 
@@ -120,7 +121,6 @@ const CurrencyDetailsListContainer = () => {
         pageSize: 100,
         pageSizeOptions: [100, 150, 200, 250, 300],
         emptyRowsWhenPaging: false,
-        // sorting: true,
         headerStyle: {
           backgroundColor: '#EEE',
         },

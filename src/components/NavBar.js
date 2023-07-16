@@ -11,10 +11,12 @@ import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import '../styles/NavBar.css';
 
+
 const NavBar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const location = useLocation();
+  const isLoggedIn = false; // Replace with your login state logic
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -63,62 +65,84 @@ const NavBar = () => {
           >
             Currency Details
           </Button>
-        </div>
-        <div className="account-icon">
-          <IconButton
-            size="large"
-            edge="end"
-            color="inherit"
-            aria-label="account of current user"
-            aria-haspopup="true"
-            onClick={handleMenu}
-          >
-            <AccountCircle />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            onClick={handleClose}
-            PaperProps={{
-              elevation: 0,
-              sx: {
-                overflow: 'visible',
-                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                mt: 1.5,
-                '& .MuiAvatar-root': {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1,
-                },
-                '&:before': {
-                  content: '""',
-                  display: 'block',
-                  position: 'absolute',
-                  top: 0,
-                  right: 14,
-                  width: 10,
-                  height: 10,
-                  bgcolor: 'background.paper',
-                  transform: 'translateY(-50%) rotate(45deg)',
-                  zIndex: 0,
-                },
-              },
-            }}
-            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          >
-            <MenuItem>
-              <IconButton>
-                <AccountCircle fontSize="small" />
+          {!isLoggedIn && (
+            <div>
+              <Button
+                component={RouterLink}
+                to="/sign-in"
+                color="inherit"
+                className={location.pathname === '/sign-in' ? 'active' : ''}
+              >
+                Sign-In
+              </Button>
+              <Button
+                component={RouterLink}
+                to="/sign-up"
+                color="inherit"
+                className={location.pathname === '/sign-up' ? 'active' : ''}
+              >
+                Sign-Up
+              </Button>
+            </div>
+          )}
+          {isLoggedIn && (
+            <div className="account-icon">
+              <IconButton
+                size="large"
+                edge="end"
+                color="inherit"
+                aria-label="account of current user"
+                aria-haspopup="true"
+                onClick={handleMenu}
+              >
+                <AccountCircle />
               </IconButton>
-              My Account
-            </MenuItem>
-            <MenuItem>Profile</MenuItem>
-            <MenuItem>Settings</MenuItem>
-            <MenuItem>Logout</MenuItem>
-          </Menu>
+              <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                onClick={handleClose}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    overflow: 'visible',
+                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                    mt: 1.5,
+                    '& .MuiAvatar-root': {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1,
+                    },
+                    '&:before': {
+                      content: '""',
+                      display: 'block',
+                      position: 'absolute',
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: 'background.paper',
+                      transform: 'translateY(-50%) rotate(45deg)',
+                      zIndex: 0,
+                    },
+                  },
+                }}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              >
+                <MenuItem>
+                  <IconButton>
+                    <AccountCircle fontSize="small" />
+                  </IconButton>
+                  My Account
+                </MenuItem>
+                <MenuItem>Profile</MenuItem>
+                <MenuItem>Settings</MenuItem>
+                <MenuItem>Logout</MenuItem>
+              </Menu>
+            </div>
+          )}
         </div>
       </Toolbar>
     </AppBar>
