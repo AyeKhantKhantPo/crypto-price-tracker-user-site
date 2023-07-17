@@ -1,0 +1,23 @@
+.historical-page {
+  margin-top: 64px;
+  padding: 16px;
+}
+
+.historical-heading {
+  margin-bottom: 200px;
+  text-transform: uppercase;
+}
+
+.historical-filters {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.historical-filters .MuiFormControl-root {
+  min-width: 120px;
+}
+
+.historical-reset-button {
+  margin-left: auto;
+}

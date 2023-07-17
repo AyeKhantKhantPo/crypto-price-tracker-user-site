@@ -1,0 +1,23 @@
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  z-index: 999;
+}
+
+.title {
+  margin: 0;
+  padding: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.container {
+  padding-top: 64px; /* Adjust the padding value as needed */
+}
+
+.table-container {
+  margin: 16px; /* Adjust the margin value as needed */
+}
