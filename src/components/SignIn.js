@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,21 +13,80 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import MuiAlert from '@mui/material/Alert';
+import signInUser from '../api/signInApi';
+import AuthContext from '../AuthContext';
 
+const defaultTheme = createTheme({
+  palette: {
+    error: {
+      main: '#f44336',
+    },
+  },
+});
 
-
-const defaultTheme = createTheme();
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export default function SignIn() {
-  
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+  const [snackbarSeverity, setSnackbarSeverity] = useState('');
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const navigate = useNavigate();
+  const { setIsLoggedIn, setUsername } = useContext(AuthContext);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarMessage('');
+    setSnackbarSeverity('');
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    setFormSubmitted(true);
+
+    // Form validation
+    const validationErrors = {};
+    if (!formData.username) {
+      validationErrors.username = 'Please enter a username';
+    }
+    if (!formData.password) {
+      validationErrors.password = 'Please enter a password';
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    try {
+      const response = await signInUser(formData);
+      console.log('Sign In successful:', response);
+      setSnackbarSeverity('success');
+      setSnackbarMessage('Sign In successful!');
+      setIsLoggedIn(true);
+      setUsername(formData.username);
+      navigate('/pairs');
+    } catch (error) {
+      console.error('Sign In failed:', error.message);
+      setSnackbarSeverity('error');
+      setSnackbarMessage(error.message);
+    }
+  };
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -47,26 +107,39 @@ export default function SignIn() {
             Sign in
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  autoComplete="given-name"
+                  name="username"
+                  required
+                  fullWidth
+                  id="username"
+                  label="User Name"
+                  autoFocus
+                  value={formData.username}
+                  onChange={handleChange}
+                  error={formSubmitted && !!errors.username}
+                  helperText={formSubmitted && errors.username}
+                />
+              </Grid>
+              <Grid item xs={12}>
+
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  error={formSubmitted && !!errors.password}
+                  helperText={formSubmitted && errors.password}
+                />
+              </Grid>
+            </Grid>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
@@ -87,6 +160,11 @@ export default function SignIn() {
               </Grid>
             </Grid>
           </Box>
+          {snackbarSeverity && snackbarMessage && (
+            <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+              {snackbarMessage}
+            </Alert>
+          )}
         </Box>
       </Container>
     </ThemeProvider>

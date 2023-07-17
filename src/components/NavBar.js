@@ -1,22 +1,25 @@
-import React, { useState } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import '../styles/NavBar.css';
+import AuthContext from '../AuthContext';
 
 
 const NavBar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const location = useLocation();
-  const isLoggedIn = false; // Replace with your login state logic
+  const navigate = useNavigate();
+  const { isLoggedIn, setIsLoggedIn, username } = useContext(AuthContext);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -24,6 +27,11 @@ const NavBar = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    navigate('/sign-in');
   };
 
   return (
@@ -135,11 +143,14 @@ const NavBar = () => {
                   <IconButton>
                     <AccountCircle fontSize="small" />
                   </IconButton>
-                  My Account
+                  {username}
                 </MenuItem>
-                <MenuItem>Profile</MenuItem>
-                <MenuItem>Settings</MenuItem>
-                <MenuItem>Logout</MenuItem>
+                <MenuItem onClick={handleLogout}>
+                  <IconButton>
+                    <ExitToAppIcon fontSize="small" />
+                  </IconButton>
+                  Logout
+                </MenuItem>
               </Menu>
             </div>
           )}

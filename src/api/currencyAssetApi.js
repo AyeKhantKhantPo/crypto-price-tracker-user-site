@@ -1,11 +1,14 @@
+import { assetHistoricalData } from '../config/config';
+
+
 const fetchCurrencyAssetHistoricalData = async (id, interval, start, end) => {
   try {
-    let url = `https://api.coincap.io/v2/assets/${id}/history?interval=${interval}`;
-
+    let url = `${assetHistoricalData}/${id}/history?interval=${interval}`;
+    
     if (start && end) {
       const startTime = new Date(start).getTime();
       const endTime = new Date(end).getTime();
-      url += `&start=${startTime}&end=${endTime}`;
+      url = `${url}&start=${startTime}&end=${endTime}`;
     }
 
     const response = await fetch(url);

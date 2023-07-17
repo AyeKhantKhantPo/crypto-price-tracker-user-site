@@ -1,11 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import MaterialTable from 'material-table';
 import fetchCurrencyRate from '../api/currencyRateApi';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
+import IconButton from '@mui/material/IconButton';
 import '../styles/CurrencyPairListContainer.css';
+import AuthContext from '../AuthContext';
+import {saveCurrencyPairApi, fetchSavedPairsApi} from '../api/savePairApi';
 
 const CurrencyPairListContainer = () => {
   const [currencyPairs, setCurrencyPairs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { isLoggedIn, username } = useContext(AuthContext);
+  const [savedPairs, setSavedPairs] = useState([]);
+
+  useEffect(() => {
+    const fetchSavedPairs = async () => {
+      try {
+        if (isLoggedIn) {
+          const savedPairs = await fetchSavedPairsApi(username);
+          setSavedPairs(savedPairs);
+        }
+      } catch (error) {
+        console.log('Error fetching saved pairs:', error);
+      }
+    };
+
+    if (isLoggedIn) {
+      fetchSavedPairs();
+    }
+  }, [isLoggedIn, username]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,9 +49,13 @@ const CurrencyPairListContainer = () => {
             const pair = {
               number: count++,
               pair: `${base}/${quote}`,
-              price: `$${price.toFixed(5)}`
+              price: `$${price.toFixed(5)}`,
+              save: savedPairs.includes(`${base}/${quote}`) ? (
+                <StarIcon fontSize="large" style={{ color: 'yellow' }} />
+              ) : (
+                  <StarBorderIcon fontSize="large" />
+              ),
             };
-
             pairs.push(pair);
           }
         });
@@ -39,7 +68,18 @@ const CurrencyPairListContainer = () => {
     };
 
     fetchData();
-  }, []);
+  }, [savedPairs]);
+
+  const handleSave = async (currencyPair) => {
+    try {
+      await saveCurrencyPairApi(username, currencyPair.pair);
+
+      setSavedPairs([...savedPairs, currencyPair.pair]);
+    } catch (error) {
+      console.error('Error saving currency pair:', error);
+    }
+  };
+
 
   const columns = [
     {
@@ -48,26 +88,35 @@ const CurrencyPairListContainer = () => {
       type: 'numeric',
       align: 'left',
       cellStyle: {
-        textAlign: 'left'
-      }
+        textAlign: 'left',
+      },
     },
     {
       title: 'Currency Pair',
       field: 'pair',
       align: 'left',
       cellStyle: {
-        textAlign: 'left'
-      }
+        textAlign: 'left',
+      },
     },
     {
       title: 'Price',
       field: 'price',
       align: 'left',
       cellStyle: {
-        textAlign: 'left'
-      }
+        textAlign: 'left',
+      },
     },
-  ];
+    isLoggedIn && {
+      title: 'Save',
+      field: 'save',
+      render: (rowData) => (
+        <IconButton onClick={() => handleSave(rowData)}>
+          {rowData.save}
+        </IconButton>
+      ),
+    },
+  ].filter(Boolean);
 
   return (
     <MaterialTable

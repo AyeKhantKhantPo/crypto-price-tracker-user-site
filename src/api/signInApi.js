@@ -1,8 +1,12 @@
 import { baseUrl } from '../config/config';
 
-const signUpUser = async (userData) => {
+
+const signInUser = async (userData) => {
+  const url = `${baseUrl}/users/sign-in`;
+
+
   try {
-    const response = await fetch(`${baseUrl}/users/sign-up`, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -11,7 +15,8 @@ const signUpUser = async (userData) => {
     });
 
     if (response.ok) {
-      return response.json();
+      const data = await response.json();
+      return data;
     } else {
       const errorMessage = await response.text();
       throw new Error(errorMessage);
@@ -21,4 +26,4 @@ const signUpUser = async (userData) => {
   }
 };
 
-export default signUpUser;
+export default signInUser;
